@@ -1593,7 +1593,7 @@ def get_gemini_recommendation(disease_name):
 
 Penyakit yang terdeteksi: {disease_name}
 
-Tugas kamu adalah memberikan rekomendasi penanganan bersifat umum, aman, dan mudah dipahami petani, tanpa menyebutkan dosis, merek, atau bahan kimia spesifik, sesuaikan penanganan dengan cuaca terupdate hari ini. 
+Tugas kamu adalah memberikan rekomendasi penanganan bersifat umum, aman, dan mudah dipahami petani, tanpa menyebutkan dosis, merek, atau bahan kimia spesifik.
 
 Batasi jawaban hanya pada tiga bagian berikut:
 
@@ -1614,7 +1614,6 @@ Dilarang:
 * Memberikan diagnosis ulang atau mempertanyakan hasil klasifikasi
 
 Jika diperlukan, arahkan petani untuk berkonsultasi dengan penyuluh pertanian atau sumber resmi setempat.
-tambahkan informasi pula mengenai penyakit tersebut, yang dapat menyebabkan kerugian pada tanaman tebu.
 
 Format jawaban dalam HTML dengan struktur:
 <h4>1. Penanganan agar penyakit tidak meluas</h4>
@@ -1993,27 +1992,11 @@ def main():
             """, unsafe_allow_html=True)
         
         with col2:
-            # Get all probabilities for all classes
-            all_probs = model_package['model'].predict_proba(st.session_state.features_scaled)[0]
-            
-            # Create HTML for all classes (excluding detected class) - HORIZONTAL
-            other_classes_list = []
-            for idx, class_name in enumerate(model_package['classes']):
-                if idx != st.session_state.prediction:  # Skip the detected class
-                    prob_percent = all_probs[idx] * 100
-                    other_classes_list.append(f'{class_name}: {prob_percent:.1f}%')
-            
-            # Join with spacing for horizontal display
-            other_classes_html = '&nbsp;&nbsp;&nbsp;&nbsp;'.join(other_classes_list)
-            
             st.markdown(f"""
             <div class="result-card">
                 <div class="result-label">Probabilitas Model</div>
                 <div class="result-value">{st.session_state.confidence:.1f}%</div>
                 <div class="result-desc">Akurasi prediksi antar kelas</div>
-                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #e1e8dd; color: #666; font-size: 0.75rem; line-height: 1.8;">
-                    {other_classes_html}
-                </div>
             </div>
             """, unsafe_allow_html=True)
         
