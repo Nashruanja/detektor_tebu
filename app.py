@@ -1854,8 +1854,8 @@ def main():
             st.markdown("""
             <div style="background: #fff3e0; padding: 0.8rem 1rem; border-radius: 8px; margin-bottom: 1rem; border-left: 3px solid #ff9800;">
                 <p style="margin: 0; font-size: 0.8rem; color: #e65100; line-height: 1.5;">
-                    📱 <strong>Info:</strong> Kamera di HP butuh <strong>HTTPS</strong>. 
-                    Kalau ga bisa akses kamera, pakai <strong>📁 Pilih File</strong> aja!
+                    📱 <strong>Info:</strong> Gunakan <strong>Kamera</strong>. 
+                    untuk memotret daun tebu anda!
                 </p>
             </div>
             """, unsafe_allow_html=True)
