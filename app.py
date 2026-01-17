@@ -1,6 +1,5 @@
 """
-Aplikasi Klasifikasi Penyakit Daun Tebu
-Clean & Professional Design
+Website Kalsifikasi Penyakit Daun Tebu
 """
 
 import streamlit as st
@@ -13,7 +12,7 @@ from PIL import Image
 import io
 import base64
 
-# Optional import - app will still work if Gemini not installed
+# Optional import 
 try:
     import google.generativeai as genai
     GEMINI_AVAILABLE = True
@@ -1366,133 +1365,62 @@ def get_rule_based_recommendation(disease_name):
                 <li>Catat kondisi cuaca dan kelembaban</li>
             </ul>""",
         
-        "Red Rot": """<h3>🔴 Red Rot - Rekomendasi Penanganan</h3>
+        "Red Rot": """<h3>Red Rot - Rekomendasi Penanganan</h3>
             
             <h4>1. Penanganan agar penyakit tidak meluas</h4>
             <p><strong>Tindakan segera yang perlu dilakukan:</strong></p>
-            <ul>
-                <li>Identifikasi dan tandai tanaman yang terinfeksi</li>
-                <li>Potong bagian batang yang terinfeksi hingga jaringan sehat</li>
-                <li>Bakar atau kubur dalam sisa tanaman terinfeksi (jangan dibiarkan di lahan)</li>
-                <li>Bersihkan alat pertanian dengan disinfektan setelah kontak dengan tanaman sakit</li>
-                <li>Tingkatkan drainase lahan untuk mengurangi kelembaban berlebih</li>
-            </ul>
+            <p>Red rot pada tebu yang disebabkan oleh Colletotrichum falcatum merupakan penyakit utama yang dapat menurunkan produktivitas secara signifikan. Berdasarkan Hossain dkk. (2020), upaya untuk mencegah agar penyakit tidak meluas dilakukan melalui penerapan Integrated Disease Management (IDM). Pendekatan ini mencakup penggunaan bahan tanam (setts) bebas patogen, penanaman varietas tebu yang memiliki ketahanan terhadap red rot, serta penerapan sanitasi lahan dan kebun secara ketat. Selain itu, praktik agronomis seperti rotasi tanaman dan pengelolaan drainase yang baik direkomendasikan untuk menekan keberadaan dan perkembangan inokulum jamur di lapangan, sehingga potensi penyebaran penyakit dapat diminimalkan.</p>
+
             
             <h4>2. Penanganan jika penyakit sudah meluas</h4>
             <p><strong>Strategi pengelolaan lahan:</strong></p>
-            <ul>
-                <li>Cabut dan musnahkan tanaman yang terinfeksi parah</li>
-                <li>Hindari penanaman tebu di lahan yang sama minimal 1-2 musim</li>
-                <li>Lakukan rotasi dengan tanaman lain (jagung, kacang-kacangan)</li>
-                <li>Perbaiki sistem drainase untuk menghindari genangan air</li>
-                <li>Konsultasikan dengan penyuluh untuk penanganan lahan skala besar</li>
-            </ul>
+            <p>Apabila penyakit red rot telah muncul dan menyebar di pertanaman, Hossain dkk. (2020) menegaskan bahwa pengendalian dengan satu metode saja, khususnya secara kimia, tidak memberikan hasil yang efektif. Oleh karena itu, pengelolaan penyakit tetap harus dilakukan secara terpadu, dengan mengombinasikan beberapa strategi seperti penggunaan varietas tahan, perlakuan bahan tanam, serta metode fisik pendukung. Salah satu teknik yang dilaporkan dapat membantu menekan infeksi patogen pada bahan tanam adalah heat therapy, yang digunakan sebagai bagian dari sistem manajemen terpadu untuk mengurangi tingkat infeksi ketika populasi patogen di lapangan sudah relatif tinggi </p>
             
             <h4>3. Pencegahan pada tanaman tebu lainnya</h4>
             <p><strong>Langkah pencegahan:</strong></p>
-            <ul>
-                <li>Gunakan bibit dari varietas tahan Red Rot (konsultasi penyuluh untuk rekomendasi lokal)</li>
-                <li>Pilih bibit sehat dan bebas dari gejala penyakit</li>
-                <li>Hindari luka pada batang saat proses tanam dan pemeliharaan</li>
-                <li>Jaga sanitasi lahan dengan membersihkan sisa tanaman</li>
-                <li>Monitor curah hujan - Red Rot berkembang di kondisi lembab</li>
-            </ul>""",
+            <p>Untuk mencegah terjadinya serangan red rot pada area tanam lain atau pada musim tanam berikutnya, Hossain dkk. (2020) menekankan pentingnya keberlanjutan praktik pencegahan. Langkah-langkah yang direkomendasikan meliputi penggunaan material tanam yang bebas patogen, pemilihan varietas yang toleran atau tahan terhadap red rot, serta penerapan sanitasi kebun dan rotasi tanaman secara konsisten. Penerapan manajemen lahan yang baik bertujuan untuk mencegah akumulasi inokulum jamur di tanah, sehingga risiko serangan red rot pada pertanaman berikutnya dapat ditekan</p>""",
         
-        "Mosaic": """<h3>🎨 Mosaic - Rekomendasi Penanganan</h3>
+        "Mosaic": """<h3>Mosaic - Rekomendasi Penanganan</h3>
             
             <h4>1. Penanganan agar penyakit tidak meluas</h4>
             <p><strong>Tindakan pencegahan penyebaran:</strong></p>
-            <ul>
-                <li>Identifikasi tanaman dengan gejala mosaic (daun belang hijau terang-gelap)</li>
-                <li>Kendalikan populasi serangga vektor (kutu daun/aphids) yang menyebarkan virus</li>
-                <li>Cabut tanaman terinfeksi pada tahap awal untuk mencegah penularan</li>
-                <li>Hindari kontak langsung alat pertanian dari tanaman sakit ke sehat</li>
-                <li>Jaga kebersihan lahan dari gulma yang menjadi inang serangga</li>
-            </ul>
+            <p>Penyakit mosaic pada tebu disebabkan oleh beberapa virus utama, yaitu Sugarcane mosaic virus (SCMV), Sorghum mosaic virus (SrMV), dan Sugarcane streak mosaic virus (SCSMV), yang dapat menurunkan aktivitas fotosintesis dan pertumbuhan tanaman. Lu dkk. (2021) menjelaskan bahwa upaya pencegahan agar penyakit tidak meluas terutama difokuskan pada penggunaan material tanam bebas virus serta pemanfaatan varietas yang memiliki tingkat ketahanan lebih baik. Hal ini penting karena sistem perbanyakan tebu secara vegetatif memungkinkan virus terakumulasi dan menyebar apabila bahan tanam yang terinfeksi terus digunakan</p>
             
             <h4>2. Penanganan jika penyakit sudah meluas</h4>
             <p><strong>Strategi pengelolaan:</strong></p>
-            <ul>
-                <li>Fokus pada pengendalian serangga vektor untuk menghentikan penyebaran</li>
-                <li>Cabut tanaman yang terinfeksi parah dan gantikan dengan bibit sehat</li>
-                <li>Hindari menggunakan stek dari tanaman terinfeksi untuk penanaman baru</li>
-                <li>Lakukan sanitasi menyeluruh setelah panen</li>
-                <li>Pertimbangkan penanaman varietas tahan mosaic untuk musim berikutnya</li>
-            </ul>
+            <p>Apabila penyakit mosaic telah muncul dan menyebar di pertanaman, Lu dkk. (2021) merekomendasikan pendekatan pengelolaan yang berfokus pada identifikasi virus secara akurat menggunakan metode molekuler, seperti teknik berbasis PCR, untuk memastikan jenis virus penyebab infeksi. Selain itu, pengendalian penyebaran dilakukan melalui pengelolaan vektor serangga serta penghapusan tanaman yang terinfeksi (roguing) guna mengurangi sumber inokulum virus di lahan dan menekan penyebaran lanjutan ke tanaman sehat</p>
             
             <h4>3. Pencegahan pada tanaman tebu lainnya</h4>
             <p><strong>Langkah pencegahan:</strong></p>
-            <ul>
-                <li>Gunakan bibit bersertifikat bebas virus (sangat penting!)</li>
-                <li>Pilih varietas tebu yang tahan terhadap Mosaic virus</li>
-                <li>Kendalikan populasi kutu daun dengan menjaga kebersihan lahan</li>
-                <li>Hindari penanaman terlalu rapat - jaga sirkulasi udara baik</li>
-                <li>Lakukan roguing (cabut tanaman sakit) secara rutin sejak awal pertumbuhan</li>
-            </ul>""",
+            <p>Untuk mencegah terjadinya serangan mosaic pada area tanam lain atau pada musim tanam berikutnya, Lu dkk. (2021) menekankan pentingnya keberlanjutan praktik pencegahan. Langkah-langkah yang direkomendasikan meliputi penggunaan material tanam yang bebas virus, pemilihan varietas yang toleran atau tahan terhadap mosaic, serta penerapan sanitasi kebun dan rotasi tanaman secara konsisten. Penerapan manajemen lahan yang baik bertujuan untuk mencegah akumulasi inokulum virus di tanah, sehingga risiko serangan mosaic pada pertanaman berikutnya dapat ditekan</p>""",
         
-        "Yellow": """<h3>💛 Yellow/Chlorotic - Rekomendasi Penanganan</h3>
+        "Yellow": """<h3>Yellow/Chlorotic - Rekomendasi Penanganan</h3>
             
             <h4>1. Penanganan agar penyakit tidak meluas</h4>
             <p><strong>Tindakan perbaikan nutrisi dan kesehatan:</strong></p>
-            <ul>
-                <li>Periksa kondisi tanah - defisiensi nitrogen sering menyebabkan menguning</li>
-                <li>Perbaiki drainase jika tanah terlalu lembab/tergenang</li>
-                <li>Berikan pemupukan berimbang sesuai hasil uji tanah</li>
-                <li>Periksa pH tanah - pastikan dalam rentang optimal (6-7)</li>
-                <li>Amati apakah ada serangan hama yang melemahkan tanaman</li>
-            </ul>
+            <p>Yellow leaf disease disebabkan oleh Sugarcane yellow leaf virus (SCYLV) dan sering ditularkan oleh vektor seperti kutu daun, sehingga riset ilmiah menekankan pentingnya resistensi genetis varietas terhadap virus ini serta pengendalian terhadap vektor serangga jika tersedia. (Bertasello dkk., 2023)</p>
             
             <h4>2. Penanganan jika penyakit sudah meluas</h4>
             <p><strong>Perbaikan kondisi lahan:</strong></p>
-            <ul>
-                <li>Lakukan pemupukan susulan dengan fokus pada nitrogen organik</li>
-                <li>Perbaiki sistem irigasi untuk menghindari kekeringan atau kelebihan air</li>
-                <li>Aplikasikan pupuk hijau atau kompos untuk memperbaiki struktur tanah</li>
-                <li>Jika disebabkan penyakit sistemik, pertimbangkan peremajaan lahan</li>
-                <li>Konsultasi dengan penyuluh untuk analisis tanah dan rekomendasi pemupukan</li>
-            </ul>
+            <p>Setelah yellow leaf menyebar, manajemen dapat melibatkan monitoring populasi vektor dan penggunaan varietas yang toleran terhadap SCYLV, karena stress virus lebih mudah dikelola dengan pendekatan varietas yang lebih tahan dan kontrol populasi vektor di lapangan. (Bertasello dkk., 2023)</p>
             
             <h4>3. Pencegahan pada tanaman tebu lainnya</h4>
             <p><strong>Langkah pencegahan:</strong></p>
-            <ul>
-                <li>Lakukan uji tanah sebelum penanaman untuk mengetahui kebutuhan pupuk</li>
-                <li>Berikan pupuk dasar yang cukup saat persiapan lahan</li>
-                <li>Gunakan varietas yang sesuai dengan kondisi tanah setempat</li>
-                <li>Terapkan jadwal pemupukan teratur sesuai fase pertumbuhan</li>
-                <li>Pastikan drainase lahan optimal untuk kesehatan akar</li>
-            </ul>""",
+            <p>Pencegahan pada tanaman baru mempertimbangkan screening varietas berdasarkan preferensi vektor dan resistensi terhadap virus untuk mengurangi peluang tersebarnya yellow leaf di blok tanaman lain. (Bertasello dkk., 2023)</p>""",
         
-        "Rust": """<h3>🍂 Rust/Karat - Rekomendasi Penanganan</h3>
+        "Rust": """<h3>Rust/Karat - Rekomendasi Penanganan</h3>
             
             <h4>1. Penanganan agar penyakit tidak meluas</h4>
             <p><strong>Tindakan pengendalian penyakit karat:</strong></p>
-            <ul>
-                <li>Identifikasi tanaman dengan bintik-bintik coklat kemerahan (pustula karat)</li>
-                <li>Pangkas dan musnahkan daun yang terinfeksi parah</li>
-                <li>Tingkatkan sirkulasi udara dengan mengatur jarak tanam</li>
-                <li>Kurangi kelembaban berlebih - hindari penyiraman berlebihan</li>
-                <li>Bersihkan gulma yang meningkatkan kelembaban di sekitar tanaman</li>
-            </ul>
+            <p>Rust pada tebu, yang termasuk penyakit daun foliar utama, biasanya dikontrol terutama melalui pemilihan varietas yang tahan karena resistensi varietas sangat penting untuk menahan penyebaran penyakit ini. Serangan rust dapat menyebar melalui uredospora yang terbawa angin sehingga varietas tahan mengurangi kemungkinan epidemi lanjutan (Viswanathan, 2022).</p>
             
             <h4>2. Penanganan jika penyakit sudah meluas</h4>
             <p><strong>Strategi pengelolaan serangan berat:</strong></p>
-            <ul>
-                <li>Lakukan sanitasi menyeluruh - kumpulkan dan musnahkan daun terinfeksi</li>
-                <li>Perbaiki drainase dan kurangi kelembaban lahan</li>
-                <li>Pertimbangkan pemangkasan daun bawah untuk meningkatkan sirkulasi udara</li>
-                <li>Hindari pemupukan nitrogen berlebihan yang membuat daun lebih rentan</li>
-                <li>Konsultasi penyuluh untuk penanganan skala luas</li>
-            </ul>
+            <p>Ketika rust sudah menyebar di ladang, literature jurnal mencatat bahwa pengendalian kimia yang efektif sulit dan penggunaan fungisida berulang mungkin diperlukan di lapangan yang sangat terserang, tetapi strategi utama tetap pada varietas tahan dan pengelolaan tangguh terhadap kondisi lingkungan yang mendukung rust (Viswanathan, 2022).</p>
             
             <h4>3. Pencegahan pada tanaman tebu lainnya</h4>
             <p><strong>Langkah pencegahan:</strong></p>
-            <ul>
-                <li>Pilih varietas tebu yang tahan terhadap penyakit karat</li>
-                <li>Hindari penanaman terlalu rapat - beri jarak cukup antar tanaman</li>
-                <li>Jaga kebersihan lahan dari sisa tanaman yang menjadi sumber spora</li>
-                <li>Monitor kelembaban - penyakit karat berkembang di kondisi lembab</li>
-                <li>Terapkan rotasi tanaman untuk memutus siklus penyakit</li>
-            </ul>"""
+            <p>Untuk pencegahan pada tanaman tebu lainnya, menjaga keragaman varietas dan tidak tergantung hanya pada satu tipe varietas dapat membantu menekan epidemi rust di area yang lebih luas karena variasi genetik dapat memperlambat penyebaran varietas rust yang agresif (Viswanathan, 2022).</p>"""
     }
     
     # Get recommendation, strip ALL whitespace including newlines
