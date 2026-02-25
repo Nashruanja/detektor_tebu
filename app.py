@@ -1009,6 +1009,8 @@ if 'analysis_done' not in st.session_state:
     st.session_state.analysis_done = False
 if 'prev_image_hash' not in st.session_state:
     st.session_state.prev_image_hash = None
+if 'validation_error' not in st.session_state:
+    st.session_state.validation_error = None
 
 # ==================== FUNCTIONS ====================
 
@@ -1030,11 +1032,29 @@ def load_model():
         st.error(f"Error loading model: {str(e)}")
         st.stop()
 
+def validate_sugarcane_leaf(img_array):
+    """
+    Validasi apakah gambar adalah daun tebu atau bukan
+    Returns: (is_valid, reason)
+    
+    ⚠️ PRE-CHECK DISABLED - Terlalu banyak false positive!
+    Cuma pakai confidence threshold aja di predict_image()
+    """
+    # SKIP semua validasi - langsung return True
+    return True, "✅ Pre-check disabled"
 
 def predict_image(image, model_package):
-    """Prediksi gambar"""
+    """Prediksi gambar dengan validasi"""
     try:
         img_array = np.array(image)
+        
+        # ===== VALIDASI 1: Pre-check visual =====
+        is_valid, validation_reason = validate_sugarcane_leaf(img_array)
+        
+        if not is_valid:
+            return "INVALID_IMAGE", 0, None, None, validation_reason
+        
+        # ===== LANJUT KE PREDIKSI =====
         img_bgr = cv2.cvtColor(img_array, cv2.COLOR_RGB2BGR)
         
         features = extract_features(img_bgr)
@@ -1044,14 +1064,28 @@ def predict_image(image, model_package):
         prediction = model_package['model'].predict(features_scaled)[0]
         probabilities = model_package['model'].predict_proba(features_scaled)[0]
         
+        # ===== VALIDASI 2: Confidence threshold =====
+        max_confidence = np.max(probabilities) * 100
+        
+        # ✅ CHECK 1: Reject jika < 50%
+        if max_confidence < 50:
+            return "LOW_CONFIDENCE", max_confidence, features_scaled, prediction, \
+                f"🚫 Confidence terlalu rendah ({max_confidence:.1f}%). Gambar mungkin bukan daun tebu atau foto tidak jelas. Upload foto daun tebu yang lebih tajam dan fokus."
+
+        # ✅ CHECK 2: Reject jika >= 99.5% (terlalu sempurna)
+        if max_confidence > 99.9:
+            return "LOW_CONFIDENCE", max_confidence, features_scaled, prediction, \
+                f"🚫 Gambar terlalu sempurna ({max_confidence:.1f}%). Kemungkinan bukan foto daun tebu asli. Upload foto daun tebu yang jelas."
+        
+
         disease_name = model_package['classes'][prediction]
         confidence = probabilities[prediction] * 100
         
-        return disease_name, confidence, features_scaled, prediction
+        return disease_name, confidence, features_scaled, prediction, None
+        
     except Exception as e:
         st.error(f"Error: {str(e)}")
-        return None, None, None, None
-
+        return None, None, None, None, str(e)
 
 @st.cache_data
 def compute_shap_cached(_model_package, features_key):
@@ -1702,6 +1736,7 @@ def main():
         <strong>2.</strong> Preview akan muncul <span class="desktop-only">di sebelah kanan</span><span class="mobile-only">di bawah</span><br>
         <strong>3.</strong> Klik tombol "Analisis Gambar"<br>
         <strong>4.</strong> Lihat hasil deteksi dan analisis model<br><br>
+        <strong style="color: #d84315;">⚠️ PENTING:</strong> Hanya upload foto daun tebu! Jangan Foto Objek Lain.
     </div>
     """, unsafe_allow_html=True)
     
@@ -1824,6 +1859,16 @@ def main():
             # Super fast preview optimization
             preview_image = st.session_state.image.copy()
             
+            # ✅ FIX: Convert RGBA to RGB (untuk PNG dengan transparency)
+            if preview_image.mode == 'RGBA':
+                # Create white background
+                rgb_image = Image.new('RGB', preview_image.size, (255, 255, 255))
+                rgb_image.paste(preview_image, mask=preview_image.split()[3])  # Use alpha as mask
+                preview_image = rgb_image
+            elif preview_image.mode not in ('RGB', 'L'):
+                # Convert other modes to RGB
+                preview_image = preview_image.convert('RGB')
+            
             # Even smaller preview for speed (600x600 max)
             max_preview_size = (600, 600)
             
@@ -1867,47 +1912,78 @@ def main():
     
     # ===== PROCESS =====
     if analyze_clicked and st.session_state.image is not None:
-        # Center progress bar container
         col_empty1, col_progress, col_empty2 = st.columns([1, 2, 1])
-        
+    
         with col_progress:
-            # Use placeholder so we can clear it
             loading_placeholder = st.empty()
             loading_placeholder.markdown("""
             <div style='text-align: center; margin: 1.5rem 0 0.5rem 0;'>
                 <span style='font-size: 0.9rem; color: #2d5016; font-weight: 600;'>
-                    ⚡ Memproses gambar...
+                    🔍 Memvalidasi gambar...
                 </span>
             </div>
             """, unsafe_allow_html=True)
-            
+        
             progress_bar = st.progress(0)
-            
-            # Step 1: Extract features
             progress_bar.progress(30)
+        
+            # REPLACE bagian result = predict_image dengan ini:
             result = predict_image(st.session_state.image, model_package)
-            
-            # Step 2: Complete
+            disease_name, confidence, features_scaled, prediction, error_message = result
+        
             progress_bar.progress(100)
-            
-            # Clear loading indicators
             loading_placeholder.empty()
             progress_bar.empty()
+        
+        # ===== CEK HASIL VALIDASI =====
+        if disease_name == "INVALID_IMAGE" or disease_name == "LOW_CONFIDENCE":
+            # Gambar ditolak (apapun alasannya)
+            st.session_state.validation_error = error_message
+            st.session_state.analysis_done = False
             
-            if result[0] is not None:
-                disease_name, confidence, features_scaled, prediction = result
-                
-                st.session_state.disease_name = disease_name
-                st.session_state.confidence = confidence
-                st.session_state.features_scaled = features_scaled
-                st.session_state.prediction = prediction
-                st.session_state.analysis_done = True
+            # SATU pesan sederhana untuk semua rejection
+            st.markdown(f"""
+            <div style="background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%); 
+                        padding: 2rem; 
+                        border-radius: 20px; 
+                        border-left: 6px solid #f44336;
+                        box-shadow: 0 6px 20px rgba(244, 67, 54, 0.15);
+                        margin: 2rem 0;
+                        text-align: center;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">❌</div>
+                <h2 style="color: #c62828; margin: 0 0 1rem 0; font-size: 1.5rem; font-weight: 800;">
+                    Gambar Ditolak
+                </h2>
+                <p style="color: #d32f2f; font-size: 1.1rem; line-height: 1.7; margin: 0 0 1.5rem 0;">
+                    Mohon upload foto <strong>daun tebu</strong> yang jelas.<br>
+                    Jangan upload foto objek lain.
+                </p>
+                <div style="background: white; padding: 1.2rem; border-radius: 12px; margin-top: 1.5rem;">
+                    <p style="margin: 0; color: #1b5e20; font-size: 0.95rem; line-height: 1.7;">
+                        <strong>💡 Tips Foto yang Benar:</strong><br>
+                        • Foto <strong>daun tebu</strong> dengan jelas dan fokus<br>
+                        • Pastikan pencahayaan cukup<br>
+                        • Jangan upload foto selain daun tebu
+                    </p>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
             
-            # Clear progress bar
-            progress_bar.empty()
+        elif disease_name is not None:
+            # Gambar valid - lanjut analisis (TANPA pesan success!)
+            st.session_state.disease_name = disease_name
+            st.session_state.confidence = confidence
+            st.session_state.features_scaled = features_scaled
+            st.session_state.prediction = prediction
+            st.session_state.analysis_done = True
+            st.session_state.validation_error = None
+            
+            # ❌ HAPUS baris ini:
+            # st.success("✅ Gambar valid! Analisis berhasil.")
+
     
     # ===== RESULTS =====
-    if st.session_state.analysis_done:
+    if st.session_state.analysis_done and st.session_state.validation_error is None:
         st.markdown("<div style='margin-top: 3rem;'></div>", unsafe_allow_html=True)
         
         col1, col2 = st.columns([1, 1], gap="large")
