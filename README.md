@@ -248,13 +248,3 @@ Jika mengalami masalah:
 2. Periksa versi Python (3.8+)
 3. Pastikan file model ada dan tidak corrupt
 4. Cek error message di terminal
-
-## 📜 License
-
-Project ini dikembangkan untuk keperluan edukasi dan penelitian.
-
----
-
-**Dikembangkan dengan ❤️ untuk membantu petani tebu Indonesia**
-
-🌾 Happy Farming! 🌾
